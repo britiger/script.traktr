@@ -162,10 +162,12 @@ class Scrobbler(threading.Thread):
             if response != None:
                 Debug("[Scrobbler] Scrobble responce: "+str(response))
         elif self._current_video['type'] == 'episode' and scrobble_episodes == 'true':
-            match = utilities.getEpisodeDetailsFromXbmc(self._current_video['id'], ['showtitle', 'season', 'episode'])
+            match = utilities.getEpisodeDetailsFromXbmc(self._current_video['id'], ['tvshowid', 'showtitle', 'season', 'episode'])
             if match == None:
                 return
-            response = utilities.scrobbleEpisodeOnTrakt(None, match['showtitle'], None, match['season'], match['episode'], self._total_time/60, int(100*self._watched_time/self._total_time))
+            tvshowdetails = utilities.getTVShowDetailsFromXBMC(match['tvshowid'], ['title', 'year', 'imdbnumber'])
+            Debug("[Scrobbler] TVShowDetails in _scrobble: "+str(tvshowdetails))
+            response = utilities.scrobbleEpisodeOnTrakt(tvshowdetails['imdbnumber'], match['showtitle'], None, match['season'], match['episode'], self._total_time/60, int(100*self._watched_time/self._total_time))
             if response != None:
                 Debug("[Scrobbler] Scrobble responce: "+str(response))
 
